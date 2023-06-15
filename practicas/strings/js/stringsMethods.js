@@ -38,12 +38,35 @@ console.log(`-${nombre.trim()}.`); //-Cristian Pan.
 
 
 //Remplazar texto dentro de string
-const productoNuevo = 'Monitor 20 pulgadas'; 
 
-console.log(productoNuevo); 
+const productoNuevo = 'Monitor 20 pulgadas'; 
 
 //Remplaza la primera coincidencia por el string dado
 console.log(productoNuevo.replace('a', 'e')); //Monitor 20 pulgedas
 
 //Remplaza todas las coincidencias por el string dado
 console.log(productoNuevo.replaceAll('a', 'e')); //Monitor 20 pulgedes
+
+//Cortar strings
+console.log(productoNuevo.slice(0, 10));
+
+console.log(productoNuevo.substring(0,10));
+
+//Obtener un caracter especifico 
+console.log(nombre.trim().charAt(0)); //C
+
+//repeat repite un texto una cantidad de veces especifica 
+const texto = "Hola ".repeat(3); 
+
+console.log(texto);
+
+//Split divide un string dado un separador, retornando un arreglo con los elementos
+const hobbits = "leer, caminar, escuchar música, escribir, aprender a programar"
+
+console.log(hobbits.split(","));
+
+//Convertir textos a mayusculas
+console.log(productoNuevo.toUpperCase());
+
+//Convertir textos a minusculas 
+console.log(productoNuevo.toLowerCase());
