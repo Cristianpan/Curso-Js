@@ -21,8 +21,6 @@ console.log(resultado);
  * filter permite crear un nuevo arreglo con 
  * los elementos que cumplan con una condición dada. 
  */
-
-
 const newCarrito = carrito.filter(producto => producto.precio > 500); 
 
 console.table(newCarrito); 
