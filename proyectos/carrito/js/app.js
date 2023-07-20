@@ -14,7 +14,7 @@ function iniciarApp() {
   carrito.addEventListener("click", eliminarCurso);
 
   //vaciar el carrito
-  vaciarCarritoBtn.addEventListener('click', vaciarCarrito); 
+  vaciarCarritoBtn.addEventListener("click", vaciarCarrito);
 }
 
 function agregarCurso(e) {
@@ -48,8 +48,12 @@ function eliminarCurso(e) {
   }
 }
 
-function vaciarCarrito(e){
-    console.log('vaciando el carrito...'); 
+function vaciarCarrito(e) {
+  articulosCarrito.forEach((curso) => {
+    listaCursos.querySelector(`[data-id='${curso.id}']`).disabled = false;
+  });
+  articulosCarrito = [];
+  limpiarCarritoHtml();
 }
 
 function obtenerDatosCurso(curso) {

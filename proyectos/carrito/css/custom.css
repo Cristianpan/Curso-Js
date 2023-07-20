@@ -69,8 +69,11 @@ button {
     z-index: 1;
     background-color: white;
     padding: 20px;
-    min-height: 400px;
+    height: auto;
+    max-height: 400px;
     min-width: 300px;
+
+    overflow-y: scroll;
 }
 .vacio {
     padding: 10px;
