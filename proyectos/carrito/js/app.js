@@ -7,6 +7,9 @@ let articulosCarrito = [];
 
 document.addEventListener("DOMContentLoaded", iniciarApp);
 function iniciarApp() {
+  //inicializa el carrito con los datos del local storage
+  inicializarCarrito();
+
   //agregar un nuevo curso
   listaCursos.addEventListener("click", agregarCurso);
 
@@ -17,17 +20,26 @@ function iniciarApp() {
   vaciarCarritoBtn.addEventListener("click", vaciarCarrito);
 }
 
+function inicializarCarrito() {
+  const carritoStorage = localStorage.getItem("carrito")
+  articulosCarrito = carritoStorage ? JSON.parse(carritoStorage) : [];
+
+  articulosCarrito.forEach((curso) => {
+    habilitarBotonAgregar(curso.id);
+  });
+  agregarArticuloHtml(); 
+}
+
 function agregarCurso(e) {
   if (e.target.classList.contains("agregar-carrito")) {
     const cursoSeleccionado = e.target.parentElement.parentElement;
-
-    e.target.disabled = true;
-
     const curso = obtenerDatosCurso(cursoSeleccionado);
 
     if (!articulosCarrito.some((articulo) => articulo.id === curso.id)) {
       //agrega elementos al carrito si no ha sido agregado
       articulosCarrito = [...articulosCarrito, curso];
+      habilitarBotonAgregar(curso.id);
+      sincronizarLocalStorage();
       agregarArticuloHtml();
     }
   }
@@ -35,27 +47,30 @@ function agregarCurso(e) {
 
 function eliminarCurso(e) {
   if (e.target.classList.contains("borrar-curso")) {
-    const cursoSeleccionado = e.target.getAttribute("data-id");
+    const cursoId = e.target.getAttribute("data-id");
 
-    articulosCarrito = articulosCarrito.filter(
-      (curso) => curso.id !== cursoSeleccionado
-    );
+    articulosCarrito = articulosCarrito.filter((curso) => curso.id !== cursoId);
 
-    listaCursos.querySelector(
-      `[data-id='${cursoSeleccionado}']`
-    ).disabled = false;
+    habilitarBotonAgregar(cursoId);
+    sincronizarLocalStorage();
     agregarArticuloHtml();
   }
 }
 
 function vaciarCarrito(e) {
   articulosCarrito.forEach((curso) => {
-    listaCursos.querySelector(`[data-id='${curso.id}']`).disabled = false;
+    habilitarBotonAgregar(curso.id);
   });
   articulosCarrito = [];
+  sincronizarLocalStorage();
   limpiarCarritoHtml();
 }
 
+function habilitarBotonAgregar(cursoId) {
+  const btnAgregar = listaCursos.querySelector(`[data-id='${cursoId}']`);
+
+  btnAgregar.disabled = btnAgregar.disabled ? false : true;
+}
 function obtenerDatosCurso(curso) {
   //obtiene elementos al carrito;
   const infoCurso = {
@@ -96,4 +111,8 @@ function limpiarCarritoHtml() {
   while (contenedorCarrito.firstChild) {
     contenedorCarrito.removeChild(contenedorCarrito.firstChild);
   }
+}
+
+function sincronizarLocalStorage() {
+  localStorage.setItem("carrito", JSON.stringify(articulosCarrito));
 }
