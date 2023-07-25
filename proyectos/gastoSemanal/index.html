@@ -15,14 +15,14 @@
         <header>
                 <h1 class="text-center">Gasto Semanal</h1>
         </header>
-        <section class="contenido-principal">
+        <main class="contenido-principal">
 
             <div class="seccion-presupuesto">
                 <h2 class="text-center">Añade tu presupuesto Aquí</h2>
                 <form id="agregar-presupuesto">
                     <div class="form-group">
                         <label for="input-presupuesto">Presupuesto</label>
-                        <input type="number" class="form-control" id="input-presupuesto" placeholder="Ej: 300000">
+                        <input type="text" class="form-control" id="input-presupuesto" placeholder="Ej: 300000">
                     </div>
 
                     <button type="submit" class="btn btn-primary">Agregar Presupuesto</button>
@@ -43,8 +43,12 @@
                                     <input type="text" class="form-control" id="cantidad" placeholder="Cantidad en $">
                                 </div>
 
-                                <button type="submit" class="btn btn-primary">Agregar</button>
+                                <div class="buttons">
+                                    <button type="button" id="resetear" class="btn btn-danger">Resetear Presupuesto</button>
+                                    <button type="submit" class="btn btn-primary">Agregar</button>
+                                </div>
                             </form>
+
 
                     </div> <!--.contenido-->
                 </div> <!--.col-->
@@ -68,7 +72,7 @@
                     </div> <!--.contenido-->
                 </div><!--.col-->
             </div> <!--.row-->
-        </section>
+        </main>
     </div>
 
 
