@@ -1,0 +1,176 @@
+html {
+  min-height: 100%;
+  box-sizing: border-box;
+}
+
+*, *::after, *::before {
+  box-sizing: inherit;
+}
+
+body {
+  color: #374151;
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+  background-color: rgb(243 244 246);
+  min-height: 100%;
+  padding-bottom: 5rem;
+}
+
+.container {
+  padding: 0;
+}
+
+
+.titulo {
+  font-weight: bold;
+  font-size: 2.6rem;
+  margin: 3rem 0;
+}
+
+.titulo span {
+  display: block;
+  color: #4f46e5;
+}
+
+.svg {
+  width: 25px;
+}
+
+
+#nueva-cita legend, #administra {
+  font-size: 2rem;
+  text-align: center;
+  font-weight: bold;
+}
+/* contenido */
+
+.contenido {
+  display: flex;
+  flex-direction: column;
+  row-gap: 3rem;
+}
+
+@media (min-width: 768px) {
+    .contenido {
+      flex-direction: row;
+      column-gap: 2rem;
+    }
+}
+
+.contenido div {
+  flex: 1; 
+}
+
+/*formulario*/
+
+#nueva-cita {
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 15px;
+}
+
+.form__campo{
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.form__label {
+  font-size: 1rem;
+  text-transform: uppercase; 
+  font-weight: bold;
+}
+
+.form__input {
+  border: 2px solid #e1e1e1; 
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.form__input--textarea {
+  height: 80px;
+  resize: none;
+}
+
+.form__submit {
+  border: none;
+  display: block;
+  width: 100%;
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 10px 0;
+  border-radius: 5px;
+  background-color: #4f46e5;
+  color: #fff;
+
+  transition: background-color 0.2s;
+}
+
+.form__submit:hover {
+  background-color: #3631a1;
+  
+}
+
+/*alerta*/ 
+
+.alert {
+  opacity: 0.75;
+}
+
+
+/*citas*/
+
+
+@media (min-width: 768px) {
+  .lista-citas {
+    height: 720px;
+    overflow-y: auto;
+    padding-right: 10px;
+  }
+}
+
+.cita {
+  background-color: #fff;
+  padding: 40px 30px;
+  border-radius: 1rem;
+  box-shadow: 2px 4px 10px 0px  rgba(112,112,112,0.25);
+  margin-bottom: 2rem;
+}
+
+.cita:last-child {
+  margin-bottom: 0;
+}
+
+.cita__texto {
+  font-size: 1rem;
+  letter-spacing: 3px;
+}
+
+.cita__texto--span {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.cita__botones {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.cita__boton {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+}
+
+.cita__boton--eliminar {
+  background-color: #ef4444;
+}
+
+.cita__boton--editar {
+  background-color: #6366f1;
+}
+
+
