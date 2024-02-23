@@ -4,6 +4,8 @@ const paginatorDiv = document.querySelector("#paginacion");
 const registersPerPage = 40;
 let totalPages;
 let iterator;
+let currentPage = 1; 
+let search = ""; 
 
 document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", validateForm);
@@ -11,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function validateForm(e) {
   e.preventDefault();
-  const search = document.querySelector("#termino").value;
+  search = document.querySelector("#termino").value;
 
   if (!search) {
     showAlert("Agrega un término de búsqueda");
@@ -54,7 +56,7 @@ function showAlert(message) {
 
 function searchImages(query) {
   const key = "32106930-e9c6450a07e221a24af2b2f5e";
-  const url = `https://pixabay.com/api/?key=${key}&q=${query}&per_page=${registersPerPage}`;
+  const url = `https://pixabay.com/api/?key=${key}&q=${query}&per_page=${registersPerPage}&page=${currentPage}`;
 
   fetch(url)
     .then((response) => response.json())
@@ -120,6 +122,12 @@ function printPaginator() {
       "uppercase",
       "rounded"
     );
+
+    button.onclick = (e) => {
+      e.preventDefault(); 
+      currentPage = value; 
+      searchImages(search); 
+    };
 
     fragment.appendChild(button);
   }
