@@ -1,69 +1,51 @@
-const cryptoSelect = document.querySelector("#criptomonedas");
-const coinSelect = document.querySelector("#moneda");
-const form = document.querySelector("#formulario");
 const result = document.querySelector("#resultado");
-const objSearch = {
-  coin: "",
-  crypto: "",
-};
+const form = document.querySelector("#formulario");
+const paginatorDiv = document.querySelector("#paginacion");
+const registersPerPage = 40;
+let totalPages;
+let iterator;
+let currentPage = 1; 
+let search = ""; 
 
 document.addEventListener("DOMContentLoaded", () => {
-  consultCriypto();
-  form.addEventListener("submit", submitForm);
-  coinSelect.addEventListener("change", getData);
-  cryptoSelect.addEventListener("change", getData);
+  form.addEventListener("submit", validateForm);
 });
 
-function consultCriypto() {
-  const url =
-    "https://min-api.cryptocompare.com/data/top/mktcapfull?limit=10&tsym=USD";
-
-  fetch(url)
-    .then((response) => response.json())
-    .then((result) => createOptions(result.Data));
-}
-
-function createOptions(cryptos) {
-  console.log(cryptos);
-  const optionsFragment = document.createDocumentFragment();
-  cryptos.forEach((crypto) => {
-    const {
-      CoinInfo: { FullName, Name },
-    } = crypto;
-    const option = document.createElement("option");
-    option.value = Name;
-    option.textContent = FullName;
-    optionsFragment.appendChild(option);
-    console.log(option);
-  });
-
-  cryptoSelect.appendChild(optionsFragment);
-}
-
-function getData(e) {
-  objSearch[e.target.name] = e.target.value;
-}
-
-function submitForm(e) {
+function validateForm(e) {
   e.preventDefault();
-  const { coin, crypto } = objSearch;
+  search = document.querySelector("#termino").value;
 
-  if (!coin || !crypto) {
-    showAlert("Todos los campos son obligatorios");
+  if (!search) {
+    showAlert("Agrega un término de búsqueda");
     return;
   }
 
-  consultAPI();
+  searchImages(search);
 }
 
 function showAlert(message) {
-  let alert = document.querySelector(".error");
+  let alert = document.querySelector(".alert");
 
   if (!alert) {
     alert = document.createElement("p");
-    alert.classList.add("error");
-    alert.textContent = message;
+    alert.classList.add(
+      "alert",
+      "bg-red-100",
+      "border-red-400",
+      "text-red-700",
+      "px-4",
+      "py-3",
+      "rounded",
+      "max-w-lg",
+      "mx-auto",
+      "mt-6",
+      "text-center"
+    );
 
+    alert.innerHTML = `
+      <strong class="font-bold">Error!</strong>
+      <span class"block sm:inline">${message}</span>
+    `;
     form.appendChild(alert);
 
     setTimeout(() => {
@@ -72,52 +54,93 @@ function showAlert(message) {
   }
 }
 
-function consultAPI() {
-  const { coin, crypto } = objSearch;
-  const url = `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${crypto}&tsyms=${coin}`;
-  showSpinner();
-  fetch(url)
-    .then((response) => response.json())
-    .then((result) => showResult(result.DISPLAY[crypto][coin]));
+async function searchImages(query) {
+  const key = "32106930-e9c6450a07e221a24af2b2f5e";
+  const url = `https://pixabay.com/api/?key=${key}&q=${query}&per_page=${registersPerPage}&page=${currentPage}`;
+
+  try {
+    const response = await fetch(url); 
+    const result = await response.json(); 
+    totalPages = calculatePages(result.totalHits); 
+    showImages(result.hits); 
+  } catch (error) {
+    console.log(error); 
+  }
 }
 
-function showResult(cryptoResult) {
-  const { PRICE, HIGHDAY, LOWDAY, CHANGEPCT24HOUR, LASTUPDATE } = cryptoResult;
-  clearHtml();
-  const price = document.createElement("p");
-  price.classList.add("precio");
-  price.innerHTML = `El precio es: <span>${PRICE}</span>`;
-  const highPrice = document.createElement("p");
-  highPrice.innerHTML = `Precio más alto: <span>${HIGHDAY}</span>`;
-  const lowPrice = document.createElement("p");
-  lowPrice.innerHTML = `Precio más bajo: <span>${LOWDAY}</span>`;
-  const lastHours = document.createElement("p");
-  lastHours.innerHTML = `Variación últimas 24 horas: <span>${CHANGEPCT24HOUR}</span>`;
-  const lastUpdate = document.createElement("p");
-  lastUpdate.innerHTML = `Última actualización: <span>${LASTUPDATE}</span>`;
-
-  result.appendChild(price);
-  result.appendChild(highPrice);
-  result.appendChild(lowPrice);
-  result.appendChild(lastHours);
-  result.appendChild(lastUpdate);
+function* createPaginator(total) {
+  for (let i = 1; i <= total; i++) {
+    yield i;
+  }
 }
 
-function showSpinner() {
-  clearHtml();
-  const spinner = document.createElement("div");
-  spinner.classList.add("spinner");
+function showImages(images) {
+  clearHtml(result);
+  images.forEach((image) => {
+    const { previewURL, likes, views, largeImageURL } = image;
 
-  spinner.innerHTML = `
-    <div class="bounce1"></div>
-    <div class="bounce2"></div>
-    <div class="bounce3"></div>
-  `;
-  result.appendChild(spinner); 
+    result.innerHTML += `
+            <div class="w-1/2 md:w-1/3 lg:w-1/4 p-3 mb-4">
+                <div class="bg-white">
+                    <img class="w-full" loading="lazy"  src="${previewURL}">
+
+                    <div class="p-4">
+                        <p class="font-bold">${likes} <span class="font-light">Me gusta</span></p>
+                        <p class="font-bold">${views} <span class="font-light">Veces Vista</span></p>
+                        <a href="${largeImageURL}" class=" block w-full bg-blue-800 hover:bg-blue-500 text-white uppercase font-bold text-center rounded mt-5 p-1" target="_blank" rel="noopener noreferrer">Ver Imagen</a> 
+                    </div>
+                </div>
+            </div>
+        `;
+  });
+
+  printPaginator();
 }
 
-function clearHtml() {
-  while (result.firstChild) {
-    result.firstChild.remove();
+function printPaginator() {
+  clearHtml(paginatorDiv);
+  iterator = createPaginator(totalPages);
+  const fragment = document.createDocumentFragment();
+
+  while (true) {
+    const { value, done } = iterator.next();
+    if (done) {
+      paginatorDiv.appendChild(fragment);
+      return;
+    }
+
+    const button = document.createElement("a");
+    button.href = "#";
+    button.dataset.page = value;
+    button.textContent = value;
+    button.classList.add(
+      "next",
+      "bg-yellow-400",
+      "px-4",
+      "py1",
+      "mr-2",
+      "font-bold",
+      "mb-4",
+      "uppercase",
+      "rounded"
+    );
+
+    button.onclick = (e) => {
+      e.preventDefault(); 
+      currentPage = value; 
+      searchImages(search); 
+    };
+
+    fragment.appendChild(button);
+  }
+}
+
+function calculatePages(total) {
+  return parseInt(Math.ceil(total / registersPerPage));
+}
+
+function clearHtml(element) {
+  while (element.firstChild) {
+    element.firstChild.remove();
   }
 }
