@@ -1,0 +1,67 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Probar la clase de Citas Actualizar una nueva cita 1`] = `
+Citas {
+  "citas": [
+    {
+      "fecha": "10-02-2024",
+      "hora": "11:50",
+      "id": 1709652862339,
+      "mascota": "Nuevo nombre",
+      "propietario": "Pedro",
+      "sintomas": "Solo duerme",
+      "telefono": "9993987865",
+    },
+    {
+      "fecha": "10-02-2024",
+      "hora": "11:50",
+      "id": 1709652862347,
+      "mascota": "Sorry",
+      "propietario": "Pedro",
+      "sintomas": "Solo duerme",
+      "telefono": "9993987865",
+    },
+  ],
+}
+`;
+
+exports[`Probar la clase de Citas Agregar una nueva cita 1`] = `
+Citas {
+  "citas": [
+    {
+      "fecha": "10-02-2024",
+      "hora": "11:50",
+      "id": 1709652862339,
+      "mascota": "Michi",
+      "propietario": "Pedro",
+      "sintomas": "Solo duerme",
+      "telefono": "9993987865",
+    },
+    {
+      "fecha": "10-02-2024",
+      "hora": "11:50",
+      "id": 1709652862347,
+      "mascota": "Sorry",
+      "propietario": "Pedro",
+      "sintomas": "Solo duerme",
+      "telefono": "9993987865",
+    },
+  ],
+}
+`;
+
+exports[`Probar la clase de Citas Eliminar cita 1`] = `
+Citas {
+  "citas": [
+    {
+      "fecha": "10-02-2024",
+      "hora": "11:50",
+      "id": 1709652862347,
+      "mascota": "Sorry",
+      "propietario": "Pedro",
+      "sintomas": "Solo duerme",
+      "telefono": "9993987865",
+    },
+  ],
+}
+`;

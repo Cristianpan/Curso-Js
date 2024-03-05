@@ -1,0 +1,19 @@
+{
+  "name": "testing-jest",
+  "version": "1.0.0",
+  "description": "Aprendiendo JEST",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "Cristian Pan",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/preset-env": "^7.24.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
+  },
+  "jest": {
+    "testEnvironment": "jsdom"
+  }
+}
