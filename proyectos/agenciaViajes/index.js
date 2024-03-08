@@ -17,6 +17,8 @@ db.authenticate()
 //Habilitar PUG
 app.set("view engine", "pug");
 
+app.use(express.urlencoded({extended: true}))
+
 //Definir archivos estáticos
 app.use(express.static("public"));
 
@@ -24,6 +26,7 @@ app.use(express.static("public"));
 app.use((req, res, next) => {
   res.locals.year = new Date().getFullYear();
   res.locals.siteName = "Agencia de Viajes";
+
 
   return next();
 });
