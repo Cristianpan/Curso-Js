@@ -1,6 +1,10 @@
 import express from "express";
+import expressFlash from "express-flash";
+import session from "express-session";
 import router from "./routes/index.js";
 import db from "./config/db.js";
+import { configDotenv } from "dotenv";
+configDotenv();
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -8,6 +12,14 @@ const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Servidor ejecutandose en el puerto ${PORT}`);
 });
+
+app.use(session({
+  secret: process.env.SECRET_KEY,
+  resave: false,
+  saveUninitialized: true
+}));
+
+app.use(expressFlash());
 
 // Conectar la base de datos
 db.authenticate()

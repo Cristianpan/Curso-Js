@@ -1,10 +1,24 @@
+import Testimonials from "../models/Testimonials.js";
 import Travels from "../models/Travels.js";
 
 class CtrlPages {
-  index(req, res) {
-    res.render("inicio", {
-      page: "Inicio",
-    });
+  async index(req, res) {
+    try {
+      const limit = { limit: 3 };
+      const result = await Promise.all([
+        Travels.findAll(limit),
+        Testimonials.findAll(limit),
+      ]);
+
+      res.render("inicio", {
+        page: "Inicio",
+        clase: "home",
+        travels: result[0],
+        testimonials: result[1],
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   aboutUs(req, res) {
@@ -12,10 +26,26 @@ class CtrlPages {
       page: "Nosotros",
     });
   }
-  testimonials(req, res) {
-    res.render("testimoniales", {
-      page: "Testimoniales",
-    });
+
+  async testimonials(req, res) {
+    try {
+      const { errors, testimonial } = req.flash();
+      const flashData = {};
+      const testimonials = await Testimonials.findAll();
+
+      if (errors || testimonial) {
+        flashData.errors = errors[0];
+        flashData.testimonial = testimonial[0];
+      }
+
+      res.render("testimoniales", {
+        page: "Testimoniales",
+        ...flashData,
+        testimonials,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
   async travels(req, res) {
     const travels = await Travels.findAll();
@@ -34,10 +64,10 @@ class CtrlPages {
           slug,
         },
       });
-      res.render('viaje', {
-        page: 'Información Viaje', 
-        travel
-      })
+      res.render("viaje", {
+        page: "Información Viaje",
+        travel,
+      });
     } catch (error) {
       console.log(error);
     }

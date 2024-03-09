@@ -3,6 +3,11 @@ import { Sequelize, DataTypes} from "sequelize";
 import db from "../config/db.js";
 
 const Travels = db.define("viajes", {
+  id: {
+    type: DataTypes.INTEGER, 
+    autoIncrement: true, 
+    primaryKey: true, 
+  }, 
   titulo: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -24,7 +29,7 @@ const Travels = db.define("viajes", {
     allowNull: false,
   },
   descripcion: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: false,
   },
   disponibles: {
