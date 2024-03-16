@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import tokenGenerator from "../utils/TokenGenerator.js";
+import generateToken from "../utils/TokenGenerator.js";
 import bcrypt from "bcrypt";
 
 const VetSchema = mongoose.Schema({
@@ -29,7 +29,7 @@ const VetSchema = mongoose.Schema({
   },
   token: {
     type: String,
-    default: tokenGenerator(),
+    default: generateToken(),
   },
   confirm: {
     type: Boolean,
@@ -44,6 +44,11 @@ VetSchema.pre("save", async function (next) {
   const salt = await bcrypt.genSalt();
   this.password = await bcrypt.hash(this.password, salt);
 });
+
+VetSchema.methods.checkPassword = async function(passwordForm){
+
+  return await bcrypt.compare(passwordForm, this.password); 
+}
 
 const Vet = mongoose.model("Vet", VetSchema);
 export default Vet;

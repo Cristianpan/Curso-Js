@@ -1,9 +1,17 @@
 import express from "express";
 import VetController from "../Controllers/VetController.js";
+import checkAuth from "../middleware/AuthMiddleware.js";
 const router = express.Router();
 
 router.post("/", VetController.create);
-router.get("/perfil", VetController.profile);
 router.get("/confirmar/:token", VetController.confirm);
+router.post("/login", VetController.auth);
+router.post("/olvide-password", VetController.forgetPassword); 
+router.get("/olvide-password/:token", VetController.checkToken); 
+router.post("/olvide-password/:token", VetController.resetPassword); 
+
+
+//area privada
+router.get("/perfil", checkAuth, VetController.profile);
 
 export default router;
