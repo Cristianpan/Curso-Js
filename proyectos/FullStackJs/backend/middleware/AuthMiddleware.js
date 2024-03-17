@@ -10,13 +10,13 @@ const checkAuth = async (req, res, next) => {
   }
 
   try {
-    token = authorization.split(" ")[1];
+    const token = authorization.split(" ")[1];
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.vet = await Vet.findById(decoded.id).select(
       "-password -token -confirm"
     );
-    return next();
+    next();
   } catch (error) {
     const e = new Error("Token no valido");
     return res.status(403).json({ msg: e.message });
