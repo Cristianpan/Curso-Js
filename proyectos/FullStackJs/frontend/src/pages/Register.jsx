@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Alert from "../components/Alert";
+import validateAccount from "../validators/AccountValidator";
+import axiosClient from "../config/axios";
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -8,30 +10,32 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [alert, setAlert] = useState({});
 
-  const handleSubmit = (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
+    const error = validateAccount(name, email, password, confirmPassword);
 
-    if ([name, email, password, confirmPassword].includes("")) {
-      setAlert({ msg: "Todos los campos son obligatorios", error: true });
+    if (error.error) {
+      setAlert(error);
       return;
     }
 
-    if (password !== confirmPassword) {
+    try {
+      await axiosClient.post('veterinarios', { name, email, password });
       setAlert({
-        msg: "Verifica que las constraseñas sean iguales",
+        msg: "Usuario creado correctamente, por favor revisa tu email",
+        error: false,
+      });
+      setEmail("");
+      setName("");
+      setConfirmPassword("");
+      setPassword("");
+    } catch (error) {
+      setAlert({
+        msg: error.response.data.msg,
         error: true,
       });
-      return;
     }
-
-    if (password.length <= 8) {
-      setAlert({
-        msg: "La contraseña debe de tener al menos 8 caracteres",
-        error: true,
-      });
-      return;
-    }
-  };
+  }
 
   useEffect(() => {
     if (alert.msg) {
@@ -50,7 +54,7 @@ const Register = () => {
         </h1>
       </div>
       <div className="mt-20 md:mt-5">
-        {alert?.msg && <Alert alert={alert} />}
+        {alert.msg && <Alert alert={alert} />}
         <form onSubmit={handleSubmit}>
           <div className="my-5">
             <label className="uppercase text-gray-600 block text-xl font-bold">
@@ -61,7 +65,7 @@ const Register = () => {
               type="text"
               placeholder="Tu nombre"
               value={name}
-              onChange={setName}
+              onChange={(e) => setName(e.target.value)}
             />
           </div>
           <div className="my-5">
@@ -73,7 +77,7 @@ const Register = () => {
               type="email"
               placeholder="Email de Registro"
               value={email}
-              onChange={setEmail}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div className="my.5">
@@ -85,7 +89,7 @@ const Register = () => {
               type="password"
               placeholder="Tu contraseña"
               value={password}
-              onChange={setPassword}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
           <div className="my.5">
@@ -97,7 +101,7 @@ const Register = () => {
               type="password"
               placeholder="Tu contraseña"
               value={confirmPassword}
-              onChange={setConfirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </div>
 

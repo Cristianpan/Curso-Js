@@ -1,4 +1,5 @@
 import Vet from "../models/Vet.js";
+import EmailRegister from "../utils/EmailRegister.js";
 import generateJWT from "../utils/JWTGenerator.js";
 import generateToken from "../utils/TokenGenerator.js";
 
@@ -13,8 +14,11 @@ class VetController {
         const error = new Error("El email ya ha sido registrado");
         return res.status(400).json({ msg: error.message });
       }
+
       const vet = new Vet(user);
       const vetSaved = await vet.save();
+
+      EmailRegister({ email, name: user.name, token: vetSaved.token });
 
       res.json(vetSaved);
     } catch (error) {
