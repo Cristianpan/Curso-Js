@@ -1,4 +1,4 @@
-export default function validateAccount(
+export function validateAccount(
   name,
   email,
   password,
@@ -20,7 +20,22 @@ export default function validateAccount(
   return alert; 
 }
 
-function hasEmptyField(vetData) {
+export function validatePassword(password, confirmPassword){
+  const alert = {
+    msg: '', 
+    error: false, 
+  }
+  
+  alert.msg = hasEmptyField([password, confirmPassword]) || verifyConfirmPassword(password, confirmPassword) || hasMinLenght(password);
+  
+  if (alert.msg){
+    alert.error = true; 
+  }
+  
+  return alert;
+}
+
+export function hasEmptyField(vetData) {
   return vetData.includes("") ? "Todos los campos son obligatorios" : "";
 }
 

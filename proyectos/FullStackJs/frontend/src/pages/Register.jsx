@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Alert from "../components/Alert";
-import validateAccount from "../validators/AccountValidator";
+import {validateAccount} from "../validators/AccountValidator";
 import axiosClient from "../config/axios";
+
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -80,7 +81,7 @@ const Register = () => {
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          <div className="my.5">
+          <div className="my-5">
             <label className="uppercase text-gray-600 block text-xl font-bold">
               Contraseña
             </label>
@@ -92,7 +93,7 @@ const Register = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <div className="my.5">
+          <div className="my-5">
             <label className="uppercase text-gray-600 block text-xl font-bold">
               Confirma tu Contraseña
             </label>
