@@ -1,36 +1,44 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Alert from "../components/Alert";
-import {validateAccount} from "../validators/AccountValidator";
+import { validateAccount } from "../validators/AccountValidator";
 import axiosClient from "../config/axios";
+import UserValidator from "../validators/UserValidator";
 
 const Register = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [alert, setAlert] = useState({});
+  const [alert, setAlert] = useState({
+    msg: "",
+    error: false,
+  });
+  const [user, setUser] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const handleInputChange = (e) => {
+    setUser({ ...user, [e.target.name]: e.target.value });
+  };
 
   async function handleSubmit(e) {
-    e.preventDefault();
-    const error = validateAccount(name, email, password, confirmPassword);
-
-    if (error.error) {
-      setAlert(error);
-      return;
-    }
-
     try {
-      await axiosClient.post('veterinarios', { name, email, password });
+      e.preventDefault();
+      const errorMsg = UserValidator.validateAccount(user);
+
+      if (errorMsg) {
+        setAlert({ msg: errorMsg, error: Boolean(errorMsg) });
+        return;
+      }
+
+      await axiosClient.post("veterinarios", user);
       setAlert({
         msg: "Usuario creado correctamente, por favor revisa tu email",
         error: false,
       });
-      setEmail("");
-      setName("");
-      setConfirmPassword("");
-      setPassword("");
+      this.reset(); 
     } catch (error) {
+      console.log(error); 
       setAlert({
         msg: error.response.data.msg,
         error: true,
@@ -41,7 +49,7 @@ const Register = () => {
   useEffect(() => {
     if (alert.msg) {
       setTimeout(() => {
-        setAlert({});
+        setAlert({ msg: "" });
       }, 3000);
     }
   }, [alert]);
@@ -65,8 +73,9 @@ const Register = () => {
               className="border w-full p-3 mt-3 bg-gray-50 rounded"
               type="text"
               placeholder="Tu nombre"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              name="name"
+              value={user.name}
+              onChange={handleInputChange}
             />
           </div>
           <div className="my-5">
@@ -77,8 +86,9 @@ const Register = () => {
               className="border w-full p-3 mt-3 bg-gray-50 rounded"
               type="email"
               placeholder="Email de Registro"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              name="email"
+              value={user.email}
+              onChange={handleInputChange}
             />
           </div>
           <div className="my-5">
@@ -89,8 +99,9 @@ const Register = () => {
               className="border w-full p-3 mt-3 bg-gray-50 rounded"
               type="password"
               placeholder="Tu contraseña"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={user.password}
+              name="password"
+              onChange={handleInputChange}
             />
           </div>
           <div className="my-5">
@@ -101,8 +112,9 @@ const Register = () => {
               className="border w-full p-3 mt-3 bg-gray-50 rounded"
               type="password"
               placeholder="Tu contraseña"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              name="confirmPassword"
+              value={user.confirmPassword}
+              onChange={handleInputChange}
             />
           </div>
 

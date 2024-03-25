@@ -3,44 +3,50 @@ import { Link, useParams } from "react-router-dom";
 import Alert from "../components/Alert";
 import axiosClient from "../config/axios";
 import { validatePassword } from "../validators/AccountValidator";
+import UserValidator from "../validators/UserValidator";
 
 const NewPassword = () => {
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [password, setPassword] = useState({
+    password: "",
+    confirmPassword: "",
+  });
+
   const [alert, setAlert] = useState("");
   const [existToken, setExistToken] = useState(false);
   const { token } = useParams();
 
-  useEffect(() => {
-    const checkToken = async () => {
-      try {
-        await axiosClient(`veterinarios/olvide-password/${token}`);
-        setAlert({
-          msg: "Coloca tu nueva contraseña",
-        });
-        setExistToken(true);
-      } catch (error) {
-        setAlert({
-          msg: "Hubo un error con el enlace",
-          error: true,
-        });
-      }
-    };
-
-    checkToken();
+  useEffect(async () => {
+    try {
+      await axiosClient(`veterinarios/olvide-password/${token}`);
+      setAlert({
+        msg: "Coloca tu nueva contraseña",
+      });
+      setExistToken(true);
+    } catch (error) {
+      setAlert({
+        msg: "Hubo un error con el enlace",
+        error: true,
+      });
+    }
   }, []);
 
+  const handleInputChange = ({ target: { value, name } }) => {
+    setPassword({ ...password, [name]: value });
+  };
+
   async function handleSubmit(e) {
-    e.preventDefault();
-
-    const error = validatePassword(password, confirmPassword);
-
-    if (error.error) {
-      setAlert(error);
-      return;
-    }
-
     try {
+      e.preventDefault();
+      const errorMessage = UserValidator.validatePassword(
+        password,
+        confirmPassword
+      );
+
+      if (errorMessage) {
+        setAlert({ msg: errorMessage, error: true });
+        return;
+      }
+
       const url = `veterinarios/olvide-password/${token}`;
       const { data } = await axiosClient.post(url, {
         password,
@@ -80,8 +86,8 @@ const NewPassword = () => {
                   className="border w-full p-3 mt-3 bg-gray-50 rounded"
                   type="password"
                   placeholder="Tu contraseña"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={password.password}
+                  onChange={handleInputChange}
                 />
               </div>
               <div className="my-5">
@@ -92,8 +98,8 @@ const NewPassword = () => {
                   className="border w-full p-3 mt-3 bg-gray-50 rounded"
                   type="password"
                   placeholder="Tu contraseña"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  value={password.confirmPassword}
+                  onChange={handleInputChange}
                 />
               </div>
 

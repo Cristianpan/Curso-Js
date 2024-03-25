@@ -2,6 +2,7 @@ import Vet from "../models/Vet.js";
 import EmailRegister from "../utils/EmailRegister.js";
 import generateJWT from "../utils/JWTGenerator.js";
 import generateToken from "../utils/TokenGenerator.js";
+import EmailForgetPassword from "../utils/EmailForgetPassword.js";
 
 class VetController {
   async create(req, res) {
@@ -44,6 +45,13 @@ class VetController {
 
       existVet.token = generateToken();
       await existVet.save();
+
+      EmailForgetPassword({
+        email, 
+        name: existVet.name, 
+        token: existVet.token
+      })
+
       res.json({ msg: "Hemos enviado un email con las instrucciones" });
     } catch (error) {
       console.log(error.message);
@@ -54,7 +62,6 @@ class VetController {
     const { token } = req.params;
 
     const validateToken = await Vet.findOne({ token });
-
     if (validateToken) {
       res.json({ msg: "Token válido y el usuario existe" });
     } else {

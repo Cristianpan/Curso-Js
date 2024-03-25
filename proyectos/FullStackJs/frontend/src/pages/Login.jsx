@@ -1,30 +1,41 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Alert from "../components/Alert";
 import useAuth from "../hooks/useAuth";
-import { hasEmptyField } from "../validators/AccountValidator";
 import axiosClient from "../config/axios";
+import BasicValidator from "../validators/BasicValidator";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [alert, setAlert] = useState({});
+  const [alert, setAlert] = useState({ msg: "", error: false });
+
+  const [user, setUser] = useState({
+    email: "",
+    password: "",
+  });
+
+  const navigate = useNavigate(); 
+
+  const handleInputChange = (e) => {
+    setUser({ ...user, [e.target.name]: e.target.value });
+  };
 
   async function handleSubmit(e) {
-    e.preventDefault();
-
-    const errorMsg = hasEmptyField([email, password]);
-    if (errorMsg) {
-      setAlert({ msg: errorMsg, error: true });
-      return;
-    }
-
     try {
-      const { data } = await axiosClient.post("veterinarios/login", {
-        email,
-        password,
-      });
-      localStorage.setItem('token', data.token); 
+      e.preventDefault();
+
+      const errorMsg = BasicValidator.hasEmptyField([
+        user.email,
+        user.password,
+      ]);
+
+      if (errorMsg) {
+        setAlert({ msg: errorMsg, error: true });
+        return;
+      }
+
+      const { data } = await axiosClient.post("veterinarios/login", user);
+      localStorage.setItem("token", data.token);
+      navigate("/admin"); 
     } catch (error) {
       setAlert({
         msg: error.response.data.msg,
@@ -36,7 +47,7 @@ const Login = () => {
   useEffect(() => {
     if (alert.msg) {
       setTimeout(() => {
-        setAlert({});
+        setAlert({ msg: "" });
       }, 3000);
     }
   }, [alert]);
@@ -60,8 +71,9 @@ const Login = () => {
               className="border w-full p-3 mt-3 bg-gray-50 rounded"
               type="email"
               placeholder="Email de Registro"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={user.email}
+              name="email"
+              onChange={handleInputChange}
             />
           </div>
           <div className="my.5">
@@ -72,8 +84,9 @@ const Login = () => {
               className="border w-full p-3 mt-3 bg-gray-50 rounded"
               type="password"
               placeholder="Tu contraseña"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={user.password}
+              name="password"
+              onChange={handleInputChange}
             />
           </div>
 

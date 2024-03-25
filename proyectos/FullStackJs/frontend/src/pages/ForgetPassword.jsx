@@ -14,16 +14,15 @@ const ForgotPassword = () => {
   }, [alert]);
 
   async function handleSubmit(e) {
-    e.preventDefault();
-    if (email === "") {
-      setAlert({ msg: "El email es obligatorio", error: true });
-      return;
-    }
     try {
+      e.preventDefault();
+      if (email === "") {
+        setAlert({ msg: "El email es obligatorio", error: true });
+        return;
+      }
       const { data } = await axiosClient.post("veterinarios/olvide-password", {
         email,
       });
-      console.log(data);
       setAlert({ msg: data.msg, error: false });
       this.reset();
     } catch (error) {

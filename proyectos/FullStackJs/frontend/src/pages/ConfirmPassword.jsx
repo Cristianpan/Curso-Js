@@ -9,28 +9,24 @@ const Confirm = () => {
   const [loading, setLoading] = useState(true);
   const [alert, setAlert] = useState({});
 
-  useEffect(() => {
-    const confirmAccount = async () => {
-      try {
-        const url = `veterinarios/confirmar/${id}`;
-        const { data } = await axiosClient(url);
+  useEffect(async () => {
+    try {
+      const url = `veterinarios/confirmar/${id}`;
+      const { data } = await axiosClient(url);
 
-        setAccountConfirmed(true);
-        setAlert({
-          msg: data.msg,
-          error: false,
-        });
-      } catch (error) {
-        setAlert({
-          msg: error.response.data.msg,
-          error: true,
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    confirmAccount();
+      setAccountConfirmed(true);
+      setAlert({
+        msg: data.msg,
+        error: false,
+      });
+    } catch (error) {
+      setAlert({
+        msg: error.response.data.msg,
+        error: true,
+      });
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   return (
