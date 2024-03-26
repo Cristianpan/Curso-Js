@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Alert from "../components/Alert";
 import axiosClient from "../config/axios";
-import { validatePassword } from "../validators/AccountValidator";
 import UserValidator from "../validators/UserValidator";
 
 const NewPassword = () => {
@@ -15,19 +14,21 @@ const NewPassword = () => {
   const [existToken, setExistToken] = useState(false);
   const { token } = useParams();
 
-  useEffect(async () => {
-    try {
-      await axiosClient(`veterinarios/olvide-password/${token}`);
-      setAlert({
-        msg: "Coloca tu nueva contraseña",
-      });
-      setExistToken(true);
-    } catch (error) {
-      setAlert({
-        msg: "Hubo un error con el enlace",
-        error: true,
-      });
-    }
+  useEffect(() => {
+    (async () => {
+      try {
+        await axiosClient(`veterinarios/olvide-password/${token}`);
+        setAlert({
+          msg: "Coloca tu nueva contraseña",
+        });
+        setExistToken(true);
+      } catch (error) {
+        setAlert({
+          msg: "Hubo un error con el enlace",
+          error: true,
+        });
+      }
+    })();
   }, []);
 
   const handleInputChange = ({ target: { value, name } }) => {

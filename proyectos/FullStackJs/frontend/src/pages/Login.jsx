@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Alert from "../components/Alert";
 import useAuth from "../hooks/useAuth";
@@ -7,13 +7,14 @@ import BasicValidator from "../validators/BasicValidator";
 
 const Login = () => {
   const [alert, setAlert] = useState({ msg: "", error: false });
+  const {auth, setAuth } = useAuth();
 
   const [user, setUser] = useState({
     email: "",
     password: "",
   });
 
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
@@ -35,7 +36,8 @@ const Login = () => {
 
       const { data } = await axiosClient.post("veterinarios/login", user);
       localStorage.setItem("token", data.token);
-      navigate("/admin"); 
+      setAuth(data);
+      navigate("/admin");
     } catch (error) {
       setAlert({
         msg: error.response.data.msg,

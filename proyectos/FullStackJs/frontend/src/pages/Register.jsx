@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Alert from "../components/Alert";
-import { validateAccount } from "../validators/AccountValidator";
 import axiosClient from "../config/axios";
 import UserValidator from "../validators/UserValidator";
 

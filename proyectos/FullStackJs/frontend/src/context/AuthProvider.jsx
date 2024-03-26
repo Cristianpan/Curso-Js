@@ -1,28 +1,36 @@
 import { useState, createContext, useEffect } from "react";
 import axiosClient from "../config/axios";
-import { set } from "react-hook-form";
+import getAuthorizationConfig from "../helpers/HeaderAuthorization";
 
-export const AuthContext = createContext();
+const AuthContext = createContext();
 
-const AuthProvider = ({ children }) => {
+export const AuthProvider = ({ children }) => {
+  const [loading, setLoading] = useState(true);
   const [auth, setAuth] = useState({});
-  useEffect(async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        return;
+
+  const closeSession = () => {
+    localStorage.removeItem("token");
+    setAuth({});
+  };
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          setLoading(false);
+        }
+        const { data } = await axiosClient(
+          "veterinarios/perfil",
+          getAuthorizationConfig()
+        );
+        setAuth(data);
+      } catch (error) {
+        setAuth({});
+      } finally {
+        setLoading(false);
       }
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      };
-      const { data } = await axiosClient("veterinarios/perfil", config);
-      setAuth(data);
-    } catch (error) {
-      setAuth({});
-    }
+    })();
   }, []);
 
   return (
@@ -30,6 +38,8 @@ const AuthProvider = ({ children }) => {
       value={{
         auth,
         setAuth,
+        loading,
+        closeSession,
       }}
     >
       {children}
@@ -37,4 +47,4 @@ const AuthProvider = ({ children }) => {
   );
 };
 
-export default AuthProvider;
+export default AuthContext;
