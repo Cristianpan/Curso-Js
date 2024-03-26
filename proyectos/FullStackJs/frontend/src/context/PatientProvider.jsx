@@ -6,6 +6,17 @@ const PatientContext = createContext();
 
 export const PatientProvider = ({ children }) => {
   const [patients, setPatients] = useState([]);
+  const [patient, setPatient] = useState({
+    name: "",
+    owner: "",
+    email: "",
+    date: "",
+    symptoms: "",
+  });
+
+  const setEdit = (patient) => {
+    setPatient(patient);
+  };
 
   useEffect(() => {
     (async () => {
@@ -19,7 +30,6 @@ export const PatientProvider = ({ children }) => {
         );
 
         setPatients(data);
-        console.log(data);
       } catch (error) {
         console.log(error);
       }
@@ -28,16 +38,59 @@ export const PatientProvider = ({ children }) => {
 
   const savePatient = async (patient) => {
     try {
+      const authConfig = getAuthorizatioConfig();
+
       const { data } = await axiosClient.post(
         "/pacientes",
+        patient,
+        authConfig
+      );
+
+      const { createdAt, updatedAt, __vm, ...patientSaved } = data;
+      setPatients([patientSaved, ...patients]);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const updatePatient = async (patient) => {
+    try {
+      const { data } = await axiosClient.put(
+        `/pacientes/${patient._id}`,
         patient,
         getAuthorizatioConfig()
       );
 
       const { createdAt, updatedAt, __vm, ...patientSaved } = data;
+      setPatients(
+        patients.map((patient) => {
+          if (patient._id === patientSaved._id) {
+            return patientSaved;
+          }
 
-      setPatients([patientSaved, ...patients]);
-    } catch (error) {}
+          return patient;
+        })
+      );
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const deletePatient = async (patientId) => {
+    try {
+      const isConfirm = confirm("¿Está seguro de realizar esta acción?");
+      
+      if (isConfirm) {
+        await axiosClient.delete(
+          `/pacientes/${patientId}`,
+          getAuthorizatioConfig()
+        );
+
+        setPatients(patients.filter((patient) => patient._id !== patientId));
+      }
+    } catch (error) {
+      throw error;
+    }
   };
 
   return (
@@ -45,6 +98,10 @@ export const PatientProvider = ({ children }) => {
       value={{
         patients,
         savePatient,
+        updatePatient,
+        deletePatient,
+        setEdit,
+        patient,
       }}
     >
       {children}

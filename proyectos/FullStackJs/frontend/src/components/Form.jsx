@@ -1,24 +1,24 @@
 import { useEffect, useState } from "react";
-import formatDateNow from "../helpers/DateFormatter";
+import { formatDateToInput } from "../helpers/DateFormatter";
 import BasicValidator from "../validators/BasicValidator";
 import Alert from "../components/Alert";
 import usePatients from "../hooks/usePatients";
 
 const Form = () => {
-  const [pacient, setPacient] = useState({
+  const [patient, setPatient] = useState({
     name: "",
     owner: "",
     email: "",
-    date: formatDateNow(),
+    date: "",
     symptoms: "",
   });
 
-  const { savePatient } = usePatients();
+  const { savePatient, patient: patientToEdit, updatePatient } = usePatients();
 
   const handleSubmit = (e) => {
     try {
       e.preventDefault();
-      const { name, owner, email, date, symptoms } = pacient;
+      const { name, owner, email, date, symptoms } = patient;
 
       const errorMsg = BasicValidator.hasEmptyField([
         name,
@@ -31,13 +31,18 @@ const Form = () => {
         setAlert({ msg: errorMsg, error: true });
         return;
       }
-      savePatient(pacient);
-      setAlert({ msg: "El paciente ha sido registrado", error: false });
-      setPacient({
+      if (patient._id) {
+        updatePatient(patient); 
+        setAlert({ msg: "El paciente ha sido actualizado", error: false });
+      } else {
+        savePatient(patient);
+        setAlert({ msg: "El paciente ha sido registrado", error: false });
+      }
+      setPatient({
         name: "",
         owner: "",
         email: "",
-        date: formatDateNow(),
+        date: formatDateToInput(),
         symptoms: "",
       });
     } catch (error) {
@@ -45,13 +50,20 @@ const Form = () => {
     }
   };
 
+  useEffect(() => {
+    if (patientToEdit._id) {
+      patientToEdit.date = formatDateToInput(patientToEdit.date);
+      setPatient(patientToEdit);
+    }
+  }, [patientToEdit]);
+
   const [alert, setAlert] = useState({
     msg: "",
     error: false,
   });
 
   function handleChange({ target: { value, name } }) {
-    setPacient({ ...pacient, [name]: value });
+    setPatient({ ...patient, [name]: value });
   }
 
   useEffect(() => {
@@ -86,7 +98,7 @@ const Form = () => {
             placeholder="Ej: Tobby"
             className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
             name="name"
-            value={pacient.name}
+            value={patient.name}
             onChange={handleChange}
           />
         </div>
@@ -103,7 +115,7 @@ const Form = () => {
             placeholder="Ej: Luis Fernando Pérez Romero"
             className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
             name="owner"
-            value={pacient.owner}
+            value={patient.owner}
             onChange={handleChange}
           />
         </div>
@@ -120,7 +132,7 @@ const Form = () => {
             placeholder="Ej: fernandoRomero@gmail.com"
             className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
             name="email"
-            value={pacient.email}
+            value={patient.email}
             onChange={handleChange}
           />
         </div>
@@ -135,12 +147,12 @@ const Form = () => {
             type="date"
             id="date"
             className={`${
-              !pacient.date ? "text-gray-400" : ""
+              !patient.date ? "text-gray-400" : ""
             } border-2 w-full p-2 mt-2rounded-md`}
             name="date"
-            value={pacient.date}
+            value={patient.date}
             onChange={handleChange}
-            min={formatDateNow()}
+            min={patient.date ? patient.date : formatDateToInput()}
           />
         </div>
         <div className="mb-5">
@@ -157,14 +169,14 @@ const Form = () => {
             placeholder="Ej: Calentura, dolor muscular"
             name="symptoms"
             onChange={handleChange}
-            value={pacient.symptoms}
+            value={patient.symptoms}
           ></textarea>
         </div>
 
         <input
           type="submit"
           className="bg-indigo-600 w-full p-3 text-white uppercase font-bold rounded-md hover:bg-indigo-800 transition cursor-pointer"
-          value="Registrar Paciente"
+          value={patient._id ? 'Guardar Cambios' : 'Registrar Paciente'}
         />
       </form>
     </>
