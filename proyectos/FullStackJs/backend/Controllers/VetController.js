@@ -32,6 +32,41 @@ class VetController {
     res.json(vet);
   }
 
+  async updateProfile(req, res) {
+    try {
+      const { body: vetData } = req;
+      const { id } = req.params;
+
+      const vet = await Vet.findById(id);
+
+      if (!vet) {
+        const error = new Error("El usuario no existe");
+        return res.status(400).json({ msg: error.msg });
+      }
+
+      if (vet.email !== vetData.email) {
+        const existEmail = await Vet.findOne({ email: vetData.email });
+
+        if (existEmail) {
+          const error = new Error(
+            "El email ya ha sido registrado, por favor ingrese otro"
+          );
+          return res.status(400).json({ msg: error.msg });
+        }
+      }
+
+      vet.email = vetData.email;
+      vet.name = vetData.name;
+      vet.tel = vetData.tel;
+      vet.web = vetData.web;
+
+      const vetUpdated = await vet.save();
+      return res.json(vetUpdated);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async forgetPassword(req, res) {
     try {
       const { email } = req.body;
@@ -47,10 +82,10 @@ class VetController {
       await existVet.save();
 
       EmailForgetPassword({
-        email, 
-        name: existVet.name, 
-        token: existVet.token
-      })
+        email,
+        name: existVet.name,
+        token: existVet.token,
+      });
 
       res.json({ msg: "Hemos enviado un email con las instrucciones" });
     } catch (error) {
@@ -106,7 +141,12 @@ class VetController {
     }
 
     if (await vet.checkPassword(password)) {
-      res.json({ token: generateJWT(vet.id) });
+      res.json({
+        _id: vet._id,
+        name: vet.name,
+        email: vet.email,
+        token: generateJWT(vet.id),
+      });
     } else {
       const error = new Error("La contraseña es incorrecta");
       return res.status(403).json({ msg: error.message });

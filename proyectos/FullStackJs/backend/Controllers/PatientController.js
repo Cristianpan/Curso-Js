@@ -15,7 +15,10 @@ class PatientController {
   }
 
   async getAllPatients(req, res) {
-    const patients = await Patient.find({ vetId: req.vet._id });
+    const patients = await Patient.find(
+      { vetId: req.vet._id },
+      "name owner email date symptoms vetId"
+    );
 
     res.json(patients);
   }
@@ -50,14 +53,14 @@ class PatientController {
         });
       }
 
-      const {name, owner, symptoms, email} = req.body;  
+      const { name, owner, symptoms, email } = req.body;
 
-      patient.name = name || patient.name;
-      patient.owner = owner || patient.owner;
-      patient.symptoms = symptoms || patient.symptoms;
-      patient.email = email || patient.email;
+      patient.name = name;
+      patient.owner = owner;
+      patient.symptoms = symptoms;
+      patient.email = email;
 
-      const patientUpdated = patient.save();
+      const patientUpdated = await patient.save();
 
       res.json(patientUpdated);
     } catch (error) {
@@ -81,10 +84,11 @@ class PatientController {
           msg: "No se ha encontrado al paciente",
         });
       }
-      patient.delete();
+
+      await patient.deleteOne();
       res.json({ msg: "El paciente ha sido eliminado correctamente" });
     } catch (error) {
-        console.log(error); 
+      console.log(error);
     }
   }
 }
