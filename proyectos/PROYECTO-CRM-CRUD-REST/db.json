@@ -1,0 +1,18 @@
+{
+  "clientes": [
+    {
+      "id": "a56c",
+      "name": "Cristian David Pan",
+      "phone": "999 398 1242",
+      "email": "panzaldivarcristian@gmail.com",
+      "company": "asd"
+    },
+    {
+      "id": "9918",
+      "name": "Cristian David Pan Zaldivar",
+      "phone": "99 9398 1242",
+      "email": "admin@admin.com",
+      "company": "hola"
+    }
+  ]
+}

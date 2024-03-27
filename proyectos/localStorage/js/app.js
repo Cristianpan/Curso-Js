@@ -35,16 +35,22 @@ function obtenerTweetsStorage() {
 }
 
 function mostrarError(mensaje) {
-  const mensajeError = document.createElement("p");
-  mensajeError.classList.add("error");
-  mensajeError.textContent = mensaje;
+  const auxError = document.querySelector('.error'); 
 
-  const contenido = document.querySelector("#contenido");
-  contenido.appendChild(mensajeError);
+  if (!auxError) {
+    const mensajeError = document.createElement("p");
+    mensajeError.classList.add("error");
+    mensajeError.textContent = mensaje;
+  
+    const contenido = document.querySelector("#contenido");
+    contenido.appendChild(mensajeError);
+  
+    setTimeout(() => {
+      mensajeError.remove();
+    }, 3000);
+  }
 
-  setTimeout(() => {
-    mensajeError.remove();
-  }, 3000);
+
 }
 
 function limpiarListadoTweets() {

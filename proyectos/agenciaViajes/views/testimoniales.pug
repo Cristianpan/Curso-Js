@@ -1,0 +1,33 @@
+extends ./layout/index
+
+block contenido
+    main.container.mt-5
+        h1.text-center.mt-5= page
+        blockquote.text-center Lee sobre nuestros clientes y sus experiencias
+        include ./templates/bloque_testimonios
+
+
+        .row
+            .col-md-12
+                h2.d-block.w-100.text-center Agrega un Testimonial 
+
+            .row.justify-content-center.col
+                .col-md-8 
+                    form(action="/testimoniales" method="POST")
+                        .form-group 
+                            label(for="nombre") Nombre 
+                            input(type="text", id="nombre", placeholder="Tu nombre", name="nombre", class="form-control" value=`${testimonial ? testimonial.nombre: ''}`) 
+                            if errors && errors.hasOwnProperty("nombre")
+                                p.text-danger(style="font-size:1rem")= errors.nombre
+                        .form-group 
+                            label(for="correo") Correo Electrónico 
+                            input(type="email",id="correo", placeholder="Tu correo", name="correo", class="form-control", value=`${testimonial ? testimonial.correo: ''}`) 
+                            if errors && errors.hasOwnProperty("correo")
+                                p.text-danger(style="font-size:1rem")= errors.correo
+                        .form-group 
+                            label(for="mensaje") Mensaje 
+                            textarea#mensaje(name="mensaje",placeholder="Tu Mensaje", class="form-control") #{testimonial ? testimonial.mensaje : ''}
+                            if errors && errors.hasOwnProperty("mensaje")
+                                p.text-danger(style="font-size:1rem")= errors.mensaje
+                        input.btn.btn-success.btn-block(type="submit")
+                         
