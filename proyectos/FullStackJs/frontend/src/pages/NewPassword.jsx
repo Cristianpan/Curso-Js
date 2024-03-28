@@ -38,6 +38,7 @@ const NewPassword = () => {
   async function handleSubmit(e) {
     try {
       e.preventDefault();
+      const {password, confirmPassword} = password; 
       const errorMessage = UserValidator.validatePassword(
         password,
         confirmPassword
@@ -89,6 +90,7 @@ const NewPassword = () => {
                   placeholder="Tu contraseña"
                   value={password.password}
                   onChange={handleInputChange}
+                  name="password"
                 />
               </div>
               <div className="my-5">
@@ -101,6 +103,7 @@ const NewPassword = () => {
                   placeholder="Tu contraseña"
                   value={password.confirmPassword}
                   onChange={handleInputChange}
+                  name="confirmPassword"
                 />
               </div>
 

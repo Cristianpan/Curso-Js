@@ -4,11 +4,9 @@ import VetRoute from "./routes/VetRoutes.js";
 import PatientRoute from "./routes/PatientRoutes.js";
 import cors from "cors";
 const app = express();
-const PORT = process.env.PORT || 4000;
+getDbConexion();
 
-app.listen(PORT, () => {
-  console.log(`Servidor funcionando en el puerto ${PORT}`);
-});
+app.use(express.json());
 
 const allowedDomains = ["http://localhost:5173"];
 
@@ -24,10 +22,13 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-app.use(express.json());
 
 //routes
 app.use("/api/veterinarios", VetRoute);
 app.use("/api/pacientes", PatientRoute);
 
-getDbConexion();
+const PORT = process.env.PORT || 4000;
+
+app.listen(PORT, () => {
+  console.log(`Servidor funcionando en el puerto ${PORT}`);
+});

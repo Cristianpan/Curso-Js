@@ -1,12 +1,15 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AuthLayout from "./layout/AuthLayout";
 import Login from "./pages/Login";
-import Confirm from "./pages/ConfirmPassword";
+import ConfirmAccount from "./pages/ConfirmAccount";
+
 import Register from "./pages/Register";
 import ForgetPassword from "./pages/ForgetPassword";
 import NewPassword from "./pages/NewPassword";
 import AdminLayout from "./layout/AdminLayout";
 import AdminPatients from "./pages/AdminPatients";
+import AdminProfile from "./pages/AdminProfile";
+import ChangePassword from "./pages/ChangePassword";
 import { AuthProvider } from "./context/AuthProvider";
 import { PatientProvider } from "./context/PatientProvider";
 
@@ -27,11 +30,13 @@ function App() {
                 path="olvide-password/:token"
                 element={<NewPassword />}
               ></Route>
-              <Route path="confirmar/:id" element={<Confirm />}></Route>
+              <Route path="confirmar/:id" element={<ConfirmAccount />}></Route>
             </Route>
 
             <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<AdminPatients />}></Route>
+              <Route index element={<AdminPatients />}></Route> 
+              <Route path="perfil" element={<AdminProfile />}></Route> 
+              <Route path="cambiar-password" element={<ChangePassword />}></Route> 
             </Route>
           </Routes>
         </PatientProvider>

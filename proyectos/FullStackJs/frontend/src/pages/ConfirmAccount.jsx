@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Alert from "../components/Alert";
 import { useParams, Link } from "react-router-dom";
 
-const Confirm = () => {
+const ConfirmAccount = () => {
   const { id } = useParams();
   const [accountConfirmed, setAccountConfirmed] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -63,4 +63,4 @@ const Confirm = () => {
   );
 };
 
-export default Confirm;
+export default ConfirmAccount;

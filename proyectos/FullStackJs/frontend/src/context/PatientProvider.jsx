@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import axiosClient from "../config/axios";
 import getAuthorizatioConfig from "../helpers/HeaderAuthorization";
+import useAuth from "../hooks/useAuth";
 
 const PatientContext = createContext();
 
@@ -13,6 +14,8 @@ export const PatientProvider = ({ children }) => {
     date: "",
     symptoms: "",
   });
+
+  const {auth} = useAuth();
 
   const setEdit = (patient) => {
     setPatient(patient);
@@ -34,7 +37,7 @@ export const PatientProvider = ({ children }) => {
         console.log(error);
       }
     })();
-  }, []);
+  }, [auth]);
 
   const savePatient = async (patient) => {
     try {

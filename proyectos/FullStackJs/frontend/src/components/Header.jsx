@@ -13,7 +13,7 @@ const Header = () => {
         <Link to="/admin" className="text-gray-800 text-xl font-semibold">
           Pacientes
         </Link>
-        <Link to="/admin" className="text-gray-800 text-xl font-semibold">
+        <Link to="/admin/perfil" className="text-gray-800 text-xl font-semibold">
           Perfil
         </Link>
 

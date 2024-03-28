@@ -125,6 +125,31 @@ class VetController {
     }
   }
 
+  async updatePassword(req, res) {
+    try {
+      const { email } = req.vet;
+      const { currentPassword, newPassword } = req.body;
+
+      const vet = await Vet.findOne({ email });
+
+      if (!vet) {
+        const error = new Error("Hubo un error");
+        return res.status(400).json({ msg: error.message });
+      }
+
+      if (await vet.checkPassword(currentPassword)) {
+        vet.password = newPassword;
+        await vet.save();
+        res.json({ msg: "La contraseña ha sido actualizada" });
+      } else {
+        const error = new Error("La contraseña actual ingresada es incorrecta");
+        res.status(400).json({ msg: error.message });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async auth(req, res) {
     const { email, password } = req.body;
 
@@ -145,6 +170,8 @@ class VetController {
         _id: vet._id,
         name: vet.name,
         email: vet.email,
+        tel: vet.tel, 
+        web: vet.web,
         token: generateJWT(vet.id),
       });
     } else {

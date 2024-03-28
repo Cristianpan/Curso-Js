@@ -12,6 +12,7 @@ router.post("/olvide-password/:token", VetController.resetPassword);
 
 //area privada
 router.get("/perfil", checkAuth, VetController.profile);
+router.put("/perfil/actualizar-password", checkAuth, VetController.updatePassword)
 router.put("/perfil/:id", checkAuth, VetController.updateProfile);
 
 export default router;
